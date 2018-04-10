@@ -2,7 +2,7 @@
 
 ## download [APK/下载应用][0]
 
-Why we need another pomodoro (focused timer)? for current existing Apps are too distracting. They either have too fancy outlook, need upgrade to pro version, or ads. 
+Why should we need another pomodoro (focused timer)? The current existing Apps are too distracting. They either have too fancy outlook, keep asking for upgrade to pro version, or ads. 
 
 What we need is a KISS one: Keep it Simple and Stupid. no much options. black and white. 
 
