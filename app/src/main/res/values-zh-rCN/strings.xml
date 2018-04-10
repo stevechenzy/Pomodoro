@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="POMODORO_IS_MATURE">番茄熟了！</string>
+    <string name="POMODORO_IS_RUNNING">番茄在成长</string>
+    <string name="app_name">专注倒计时</string>
+    <string name="APP_TITLE">专注倒计时</string>
+</resources>

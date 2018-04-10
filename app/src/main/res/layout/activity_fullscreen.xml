@@ -16,7 +16,6 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:keepScreenOn="true"
-        android:text="@string/dummy_content"
         android:textAppearance="@android:style/TextAppearance.Holo.Large"
         android:textColor="#FFFFFFFF"
         android:textSize="120sp"
@@ -31,12 +30,10 @@
         android:fitsSystemWindows="true">
 
         <LinearLayout
-            android:id="@+id/fullscreen_content_controls"
-            style="?metaButtonBarStyle"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="@android:color/holo_blue_dark"
+
             android:orientation="horizontal"
             tools:ignore="UselessParent">
 

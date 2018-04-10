@@ -1,11 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Pomodoro</string>
-
-    <string name="dummy_button">Start</string>
-    <string name="dummy_content">25:00</string>
-    <string name="count_down_finished">Count Down Finish</string>
-    <string name="CANCEL">取消</string>
-    <string name="CONFIRM_EXIT">确定要退出吗?</string>
-    <string name="INFORMATION">提示</string>
-    <string name="OK">确认</string>
+    <string name="POMODORO_IS_RUNNING">Pomodoro is running</string>
+    <string name="POMODORO_IS_MATURE">Pomodoro is mature!</string>
+    <string name="APP_TITLE">Pomodoro</string>
 </resources>

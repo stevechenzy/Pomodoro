@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 public class FullscreenActivity extends AppCompatActivity {
 
+    /*
     // -- auto hide ---
     private static final boolean AUTO_HIDE = true;
     private static final int AUTO_HIDE_DELAY_MILLIS = 2000;
@@ -111,6 +112,7 @@ public class FullscreenActivity extends AppCompatActivity {
             hide();
         }
     };
+    */
 //    /**
 //     * Touch listener to use for in-layout UI controls to delay hiding the
 //     * system UI. This is to prevent the jarring behavior of controls going away
@@ -125,15 +127,14 @@ public class FullscreenActivity extends AppCompatActivity {
 //            return false;
 //        }
 //    };
-
     /**
      * Schedules a call to hide() in delay milliseconds, canceling any
      * previously scheduled calls.
      */
-    private void delayedHide(int delayMillis) {
-        mHideHandler.removeCallbacks(mHideRunnable);
-        mHideHandler.postDelayed(mHideRunnable, delayMillis);
-    }
+//    private void delayedHide(int delayMillis) {
+//        mHideHandler.removeCallbacks(mHideRunnable);
+//        mHideHandler.postDelayed(mHideRunnable, delayMillis);
+//    }
 
     // ----- timer setting ----
     private static final float SCROLL_STEP = 10f;
@@ -151,10 +152,10 @@ public class FullscreenActivity extends AppCompatActivity {
     private static final int MAX_FONT_SIZE = 50;
     private static final int FONT_MARGIN = 10;
 
-    private static final int TIMER_STATE_READY = 0;
-    private static final int TIMER_STATE_RUNNING = 1;
-    private static final int TIMER_STATE_PAUSE = 2;
-    private static final int TIMER_STATE_FINISHED = 3;
+//    private static final int TIMER_STATE_READY = 0;
+//    private static final int TIMER_STATE_RUNNING = 1;
+//    private static final int TIMER_STATE_PAUSE = 2;
+//    private static final int TIMER_STATE_FINISHED = 3;
     private static int STOP_TIMER_FLING_THRESHOLD = 200;
 
     private static final int BOTH = 0;
@@ -257,7 +258,7 @@ public class FullscreenActivity extends AppCompatActivity {
     private TextView mContentView;
 
 
-    private View mControlsView;
+    //private View mControlsView;
 
     private void updateTimerSetting() {
 
@@ -295,8 +296,8 @@ public class FullscreenActivity extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        //getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //getSupportActionBar().setDisplayShowHomeEnabled(false);
         adjustFontSize();
 
     }
@@ -346,6 +347,10 @@ public class FullscreenActivity extends AppCompatActivity {
             mService = binder.getService();
             //Log.i("ServiceBund:", "timerState:" + mService.getTimerState());
             mBound = true;
+            if (mService.getTimerState() == TimerService.TIMER_STATE_PAUSE){
+                mContentView.setBackgroundColor(0xFFA4C639);
+                onTickUpdate(mService.getRemainMilliseconds());
+            }
         }
 
         @Override
@@ -356,6 +361,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        Log.i("Activity","onStart");
         super.onStart();
         // Create an Explicit Intent
         Intent intent = new Intent(this, TimerService.class);
@@ -367,6 +373,8 @@ public class FullscreenActivity extends AppCompatActivity {
         //Intent intent = new Intent(this, TimerService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         registerBroadcastReceivers();
+
+
     }
 
     @Override
@@ -393,33 +401,26 @@ public class FullscreenActivity extends AppCompatActivity {
     }
 
 
+    //@SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_fullscreen);
 
-        mVisible = true;
-        mControlsView = findViewById(R.id.fullscreen_content_controls);
+        //mVisible = true;
+        //mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
         currentSetTimer = getDefaultTimer();
         updateTimerSetting();
         activateFullScreen();
 
 
-        //auto hide
-        mVisible = true;
-        mControlsView = findViewById(R.id.fullscreen_content_controls);
-        mContentView = findViewById(R.id.fullscreen_content);
-
-
-//
-
 
         //------ double tap ------
 
 
-        final GestureDetector gd = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+        final GestureDetector gd = new GestureDetector(mContentView.getContext(), new GestureDetector.SimpleOnGestureListener() {
 
             private int getScrollType(MotionEvent e1, MotionEvent e2, float dX, float dY) {
                 String TAG = "ScrollType:";
@@ -463,7 +464,7 @@ public class FullscreenActivity extends AppCompatActivity {
             public boolean onDoubleTap(MotionEvent e) {
 
                 //your action here for double tap e.g.
-                //Log.i("OnDoubleTapListener", "onDoubleTap");
+                Log.i("OnDoubleTapListener", "onDoubleTap");
                 startTimer();
                 return true;
             }
@@ -484,7 +485,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 //width = dm.widthPixels *3/4;
                 float scale = e1.getX() - e2.getX();
                 if (mBound) {
-                    if (mService.getTimerState() == TIMER_STATE_RUNNING || mService.getTimerState() == TIMER_STATE_PAUSE) {
+                    if (mService.getTimerState() == TimerService.TIMER_STATE_RUNNING || mService.getTimerState() == TimerService.TIMER_STATE_PAUSE) {
                         if (Math.abs(scale) > width) {
                             stopTimer();
                         }
@@ -505,7 +506,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 if (!mBound) {
                     return super.onScroll(e1, e2, distanceX, distanceY);
                 }
-                if (mService.getTimerState() != TIMER_STATE_READY) {
+                if (mService.getTimerState() != TimerService.TIMER_STATE_READY) {
                     return true;
                 }
 
@@ -538,24 +539,30 @@ public class FullscreenActivity extends AppCompatActivity {
 
             @Override
             public void onLongPress(MotionEvent e) {
-                //Log.d("OnDoubleTapListener", "onLongPress");
-
-                super.onLongPress(e);
+                Log.i("OnDoubleTapListener", "onLongPress");
+                if (mBound){
+                    if (mService.getTimerState() == TimerService.TIMER_STATE_RUNNING){
+                        startTimer();
+                    }
+                }
+                //super.onLongPress(e);
 
             }
 
-            @Override
-            public boolean onDoubleTapEvent(MotionEvent e) {
-                //Log.d("OnDoubleTapListener", "onDoubleTapEvent");
 
-                return true;
-            }
 
+//            @Override
+//            public boolean onDoubleTapEvent(MotionEvent e) {
+//                //Log.d("OnDoubleTapListener", "onDoubleTapEvent");
+//                return false;
+//                //return super.onDoubleTapEvent(e);
+//            }
+//
             @Override
             public boolean onDown(MotionEvent e) {
-                //Log.d("OnDoubleTapListener", "onDown");
-
+                Log.i("OnDoubleTapListener", "onDown");
                 return true;
+                //return super.onDown(e);
             }
 
 
@@ -571,16 +578,18 @@ public class FullscreenActivity extends AppCompatActivity {
                 return (float) Math.sqrt(x * x + y * y);
             }
 
+
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                //Log.d("onTouch", "onTouch");
+                Log.i("onTouch", "onTouch");
                 //activateFullScreen();
-                toggle();
+                //toggle();
                 if (!mBound) {
                     return true;
                 }
 
-                if (mService.getTimerState() != TIMER_STATE_READY) {
+                if (mService.getTimerState() != TimerService.TIMER_STATE_READY) {
                     return gd.onTouchEvent(event);
                 }
                 String TAG = "Pinich:";
@@ -665,9 +674,9 @@ public class FullscreenActivity extends AppCompatActivity {
             return;
         }
         if (mBound) {
-            if (mService.getTimerState() == TIMER_STATE_READY) {
+            if (mService.getTimerState() == TimerService.TIMER_STATE_READY) {
                 saveDefaultTimer2Prefs();
-            } else if (mService.getTimerState() == TIMER_STATE_RUNNING) {
+            } else if (mService.getTimerState() == TimerService.TIMER_STATE_RUNNING) {
                 mContentView.setBackgroundColor(0xFFA4C639);
             } else {
                 mContentView.setBackgroundColor(0xFF000000);

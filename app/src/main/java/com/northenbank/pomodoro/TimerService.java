@@ -1,12 +1,16 @@
 package com.northenbank.pomodoro;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Binder;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -14,6 +18,7 @@ import android.util.Log;
 
 public class TimerService extends Service {
     private static final String TAG = "TimerService:";
+
 
     private final IBinder mBinder = new LocalBinder();
 
@@ -53,7 +58,7 @@ public class TimerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //Log.i(TAG, "onStartCommand called.");
-        putServiceForeground();
+        putServiceForeground(getString(R.string.POMODORO_IS_RUNNING));
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -81,40 +86,63 @@ public class TimerService extends Service {
         sendBroadcast(intent);
     }
 
-    private void putServiceForeground(){
-//        Intent notificationIntent = new Intent(this, TimerService.class);
-//        PendingIntent pendingIntent =
-//                PendingIntent.getActivity(this, 0, notificationIntent, 0);
-//
-//        Notification notification =
-//                new Notification.Builder(this, CHANNEL_DEFAULT_IMPORTANCE)
-//                        .setContentTitle(getText(R.string.notification_title))
-//                        .setContentText(getText(R.string.notification_message))
-//                        .setSmallIcon(R.drawable.icon)
-//                        .setContentIntent(pendingIntent)
-//                        .setTicker(getText(R.string.ticker_text))
-//                        .build();
-//
-//        startForeground(ONGOING_NOTIFICATION_ID, notification);
+    private final static String CHANNEL_ID = "13337";
+    private final static int NOTIFICATION_ID = 13337;
+
+    private NotificationCompat.Builder createNotificationBuilder(String message){
 
         Intent notificationIntent = new Intent(this, FullscreenActivity.class);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, 0);
 
-        Notification notification = new NotificationCompat.Builder(this, "13337")
-                .setSmallIcon(R.drawable.tomoto1)
-                .setContentTitle("Pomodoro")
-                .setContentText("pomodoro is running")
-                .setContentIntent(pendingIntent).build();
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+        builder.setSmallIcon(R.drawable.tomoto1)
+                .setContentTitle(getString(R.string.APP_TITLE))
+                .setContentText(message)
+                .setContentIntent(pendingIntent);
 
-        startForeground(13337, notification);
+        return builder;
     }
+    private void putServiceForeground(String message){
+
+        Notification notification;
+        NotificationCompat.Builder builder = createNotificationBuilder(message);
+        if ( Build.VERSION.SDK_INT < 26 ) {
+            Log.i("Putforward 1", "Buid.Version:"+Build.VERSION.SDK_INT);
+
+            notification = builder.build();
+
+        } else {
+            Log.i("Putforward 2", "Buid.Version:"+Build.VERSION.SDK_INT);
+
+            final String ChannelId = "northenbank.NotificationChannelID";
+            final CharSequence ChannelName = "Northenback Pomodoro Channel";
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, ChannelName, NotificationManager.IMPORTANCE_LOW);
+            ((NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE)).
+                    createNotificationChannel(channel);
+
+            //builder = new Notification.Builder(this, ChannelId);
+
+
+            notification  = builder.build();
+
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+            // notificationID allows you to update the notification later on.
+            mNotificationManager.notify(NOTIFICATION_ID, notification);
+            //startForeground(100, notification);
+            Log.i("notify", "notified");
+
+        }
+
+        startForeground(NOTIFICATION_ID, notification);
+   }
     //--------timer class-----------
-    private static final int TIMER_STATE_READY = 0;
-    private static final int TIMER_STATE_RUNNING = 1;
-    private static final int TIMER_STATE_PAUSE = 2;
-    private static final int TIMER_STATE_FINISHED = 3;
+    public static final int TIMER_STATE_READY = 0;
+    public static final int TIMER_STATE_RUNNING = 1;
+    public static final int TIMER_STATE_PAUSE = 2;
+    public static final int TIMER_STATE_FINISHED = 3;
 
     private int timerState = TIMER_STATE_READY;
     private long remainMilliseconds = 0;
@@ -122,17 +150,23 @@ public class TimerService extends Service {
     public int getTimerState(){
         return timerState;
     }
-
+    public long getRemainMilliseconds(){
+        return remainMilliseconds;
+    }
     public void startTimer(long currentSetTimer) {
-        //Log.i(TAG, "startTimer called. timerState="+timerState );
+        Log.i(TAG, "startTimer called. timerState="+timerState );
         if (timerState == TIMER_STATE_READY) {
             Intent intent = new Intent(this, TimerService.class);
             intent.putExtra("key", "val");
+
             startService(intent);
-            putServiceForeground();
+
+            putServiceForeground(getString(R.string.POMODORO_IS_RUNNING));
             countdownTimer = new CountDownTimerClass(1000 * currentSetTimer, 1000);
             countdownTimer.start();
             timerState = TIMER_STATE_RUNNING;
+            Log.i("StartTimer: ", "Started");
+
         } else if (timerState == TIMER_STATE_RUNNING) {
             try {
                 countdownTimer.cancel();
@@ -171,7 +205,7 @@ public class TimerService extends Service {
 
     }
     private void updateTick(long remainMS){
-        ////Log.i(TAG, "updateTick called. remain:"+remainMS+" | timerState="+timerState);
+        Log.i(TAG, "updateTick called. remain:"+remainMS+" | timerState="+timerState);
         sendBroadcastMessage("TIMER", remainMS, "TIMER_STATE_UPDATE");
     }
     private void onTimerFinished(){
@@ -179,21 +213,24 @@ public class TimerService extends Service {
         sendBroadcastMessage("TIMER", 0, "TIMER_STATE_UPDATE");
 
 
-        // Add as notification
-        Intent notificationIntent = new Intent(this, FullscreenActivity.class);
+//        // Add as notification
+//        Intent notificationIntent = new Intent(this, FullscreenActivity.class);
+//
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+//                notificationIntent, 0);
+//
+//        Notification notification = new NotificationCompat.Builder(this, "13337")
+//                .setSmallIcon(R.drawable.tomoto1)
+//                .setContentTitle("Pomodoro")
+//                .setContentText("pomodoro is mature!")
+//                .setContentIntent(pendingIntent).build();
+//
+//        startForeground(13337, notification);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                notificationIntent, 0);
-
-        Notification notification = new NotificationCompat.Builder(this, "13337")
-                .setSmallIcon(R.drawable.tomoto1)
-                .setContentTitle("Pomodoro")
-                .setContentText("pomodoro is mature!")
-                .setContentIntent(pendingIntent).build();
-
-        startForeground(13337, notification);
         //NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         //manager.notify(0, builder.build());
+
+        putServiceForeground(getString(R.string.POMODORO_IS_MATURE));
 
     }
 
@@ -212,11 +249,6 @@ public class TimerService extends Service {
             remainMilliseconds = millisUntilFinished;
 
             updateTick(remainMilliseconds);
-//            int progress = (int) (millisUntilFinished / 1000);
-//            int min = progress / 60;
-//            int sec = progress % 60;
-
-            //mContentView.setText(min + ":" + String.format("%02d", sec));
 
         }
 
