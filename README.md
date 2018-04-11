@@ -1,13 +1,14 @@
 # Pomodoro/专心倒计时 App For Android
 
 <a href="https://github.com/stevechenzy/Pomodoro/raw/master/apk/app-release.apk> <img src="screenshots/qr-code.png" width="300"></a>
-## download [APK/下载应用][0]  
+
+**download [APK/下载应用][0]** 
 
 ____
 
->Why should we need another pomodoro (focused timer)? The current existing Apps are too distracting. They either have too fancy outlook, keep asking for upgrade to pro version, or showing ads. That is really annoying. 
->Help yourself! As a Ex-SW Engineer, this is my first Android App. While focusing on book, work or other task you should have it. For trainers, it is also a convenient coundown timer for classroom.
->What we need is a KISS one: Keep it Simple and Stupid. no much options. black and white. 
+Why should we need another pomodoro (focused timer)? The current existing Apps are too distracting. They either have too fancy outlook, keep asking for upgrade to pro version, or showing ads. That is really annoying. 
+Help yourself! As a Ex-SW Engineer, this is my first Android App. While focusing on book, work or other task you should have it. For trainers, it is also a convenient coundown timer for classroom.
+What we need is a KISS one: Keep it Simple and Stupid. no much options. black and white. 
 
 ____
 
@@ -24,7 +25,7 @@ ____
 
 ____
 
->市场上的番茄钟应用都太炫、充斥了广告和推广信息，甚至申请各种不必要的权限，完全是与专心致志的目标背道而驰。求人不如求己，自己开发一个吧！"前软件工程师"开发的第一个安卓手机应用，极简单、极干净、不要额外的权限，不要广告。满足自己看书、工作甚至培训上课的需要。
+市场上的番茄钟应用都太炫、充斥了广告和推广信息，甚至申请各种不必要的权限，完全是与专心致志的目标背道而驰。求人不如求己，自己开发一个吧！"前软件工程师"开发的第一个安卓手机应用，极简单、极干净、不要额外的权限，不要广告。满足自己看书、工作甚至培训上课的需要。
 
 ## 使用方法：
 
