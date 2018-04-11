@@ -3,6 +3,8 @@
 
 ## download [APK/下载应用][0]
 
+![下载](./screenshots/qr-code.png "download")
+
 Why should we need another pomodoro (focused timer)? The current existing Apps are too distracting. They either have too fancy outlook, keep asking for upgrade to pro version, or showing ads. That is really annoying. 
 
 Help yourself! As a Ex-SW Engineer, this is my first Android App. While focusing on book, work or other task you should have it. For trainers, it is also a convenient coundown timer for classroom.
