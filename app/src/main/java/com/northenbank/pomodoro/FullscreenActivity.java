@@ -23,6 +23,8 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 
@@ -151,8 +153,9 @@ public class FullscreenActivity extends AppCompatActivity {
     private static final int MIN_FONT_SIZE = 10;
     private static final int MAX_FONT_SIZE = 50;
     private static final int FONT_MARGIN = 10;
+    public static final int SCREEN_EDGE_BORDER = 200;
 
-//    private static final int TIMER_STATE_READY = 0;
+    //    private static final int TIMER_STATE_READY = 0;
 //    private static final int TIMER_STATE_RUNNING = 1;
 //    private static final int TIMER_STATE_PAUSE = 2;
 //    private static final int TIMER_STATE_FINISHED = 3;
@@ -406,6 +409,7 @@ public class FullscreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         setContentView(R.layout.activity_fullscreen);
 
         //mVisible = true;
@@ -481,7 +485,7 @@ public class FullscreenActivity extends AppCompatActivity {
                     return false;
                 }
                 DisplayMetrics dm = getResources().getDisplayMetrics();
-                int width = dm.widthPixels - STOP_TIMER_FLING_THRESHOLD;
+                int width = dm.widthPixels /2; // - STOP_TIMER_FLING_THRESHOLD;
                 //width = dm.widthPixels *3/4;
                 float scale = e1.getX() - e2.getX();
                 if (mBound) {
@@ -490,7 +494,7 @@ public class FullscreenActivity extends AppCompatActivity {
                             stopTimer();
                         }
                     } else {
-                        if (Math.abs(scale) > 500) {
+                        if (Math.abs(scale) > width) {
                             stopTimer();
                             preselectedTimers(scale);
                         }
@@ -511,6 +515,15 @@ public class FullscreenActivity extends AppCompatActivity {
                 }
 
                 if (getScrollType(e1, e2, distanceX, distanceY) == VERTICAL) {
+
+                    DisplayMetrics dm = getResources().getDisplayMetrics();
+                    //Log.i(TAG,"scroll start e2.Y=: "+e2.getY()+", e1.Y="+e1.getY()+" | Height= "+dm.heightPixels);
+
+
+                    if (e1.getY() < SCREEN_EDGE_BORDER || e1.getY() > (dm.heightPixels - SCREEN_EDGE_BORDER) ){
+                        Log.i(TAG,"scroll start too close to edge, skip: "+e2.getY()+","+e1.getY()+" | "+dm.heightPixels);
+                        return true;
+                    }
 
                     float scrollDist = e1.getY() - e2.getY();
                     //Log.i(TAG, "new distY:" + scrollDist + " | y:" + distanceY);
@@ -560,7 +573,7 @@ public class FullscreenActivity extends AppCompatActivity {
 //
             @Override
             public boolean onDown(MotionEvent e) {
-                Log.i("OnDoubleTapListener", "onDown");
+                //Log.i("OnDoubleTapListener", "onDown");
                 return true;
                 //return super.onDown(e);
             }
@@ -582,7 +595,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Log.i("onTouch", "onTouch");
+                //Log.i("onTouch", "onTouch");
                 //activateFullScreen();
                 //toggle();
                 if (!mBound) {
