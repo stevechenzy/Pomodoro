@@ -1,13 +1,12 @@
-<img src="screenshots/tomoto.jpg" width="100">
 
-![LOGO](./screenshots/tomoto.jpg "logo" = 100x)
 
-# Pomodoro/专心倒计时 App For Android
+
+# <img src="screenshots/tomato.jpg" width="150">Pomodoro/专心倒计时 App For Android
 
 ## download [APK/下载应用][0]
 
-<img src="screenshots/qr-code.png" width="100">
-![下载](./screenshots/qr-code.png =100x "download")
+<img src="screenshots/qr-code.png" width="300">
+
 
 Why should we need another pomodoro (focused timer)? The current existing Apps are too distracting. They either have too fancy outlook, keep asking for upgrade to pro version, or showing ads. That is really annoying. 
 
@@ -15,10 +14,10 @@ Help yourself! As a Ex-SW Engineer, this is my first Android App. While focusing
 
 What we need is a KISS one: Keep it Simple and Stupid. no much options. black and white. 
 
-![操作说明](./screenshots/FocusedPomodoro.mp4 "How to use it")
+
+<video src="screenshots/FocusedPomodoro.mp4" width="480" height="270" controls preload></video>
 
 
-![Video: Introduction/操作说明][1]
 
 ## Usage:
 
@@ -47,4 +46,3 @@ What we need is a KISS one: Keep it Simple and Stupid. no much options. black an
 
 [0]:https://github.com/stevechenzy/Pomodoro/raw/master/apk/app-release.apk
 
-[1]:https://github.com/stevechenzy/Pomodoro/raw/master/screenshots/FocusedPomodoro.mp4
