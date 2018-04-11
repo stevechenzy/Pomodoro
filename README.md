@@ -1,3 +1,4 @@
+![LOGO](./screenshots/tomoto.jpg "logo")
 # Pomodoro/专心倒计时 App For Android
 
 ## download [APK/下载应用][0]
@@ -9,7 +10,10 @@ Help yourself! As a Ex-SW Engineer, this is my first Android App. While focusing
 What we need is a KISS one: Keep it Simple and Stupid. no much options. black and white. 
 
 ![操作说明](./screenshots/FocusedPomodoro.mp4 "How to use it")
-[Video: Introduction/操作说明][1]
+
+
+![Video: Introduction/操作说明][1]
+
 ## Usage:
 
 1. Start/Pause timer: **double click/tap** on the screen; **long press** pause the timer.
@@ -31,7 +35,10 @@ What we need is a KISS one: Keep it Simple and Stupid. no much options. black an
 ## use it in the training room / 在培训教室里使用：
 
 ![手机连接](./screenshots/2.jpg "Android Phone Connection")
+
 ![投影屏幕](./screenshots/1.jpg "Projector Screen")
 
+
 [0]:https://github.com/stevechenzy/Pomodoro/raw/master/apk/app-release.apk
+
 [1]:https://github.com/stevechenzy/Pomodoro/raw/master/screenshots/FocusedPomodoro.mp4
