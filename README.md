@@ -12,7 +12,7 @@ What we need is a KISS one: Keep it Simple and Stupid. no much options. black an
 
 ____
 
-<a href="https://github.com/stevechenzy/Pomodoro/blob/master/screenshots/FocusedPomodoro.mp4?raw=true" width="480"><img src="screenshots/introduction.gif"></a>
+<a href="https://github.com/stevechenzy/Pomodoro/blob/master/screenshots/FocusedPomodoro.mp4?raw=true" width="480"><img src="screenshots/introduction.gif">Download HD video (下载操作视频)</a>
 
 
 ____
