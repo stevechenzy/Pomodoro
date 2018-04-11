@@ -1,6 +1,6 @@
 # Pomodoro/专心倒计时 App For Android
 
-<a href="https://github.com/stevechenzy/Pomodoro/raw/master/apk/app-release.apk> <img src="screenshots/qr-code.png" width="300"></a>
+<a href="https://github.com/stevechenzy/Pomodoro/raw/master/apk/app-release.apk" > <img src="screenshots/qr-code.png" width="300"></a>
 
 **download [APK/下载应用][0]** 
 
