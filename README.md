@@ -47,4 +47,4 @@ What we need is a KISS one: Keep it Simple and Stupid. no much options. black an
 
 [0]:https://github.com/stevechenzy/Pomodoro/raw/master/apk/app-release.apk
 
-[1]:https://github.com/stevechenzy/Pomodoro/raw/master/screenshots/FocusedPomodoro.mp4
+[1]:https://github.com/stevechenzy/Pomodoro/blob/master/screenshots/FocusedPomodoro.mp4
