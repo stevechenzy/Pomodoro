@@ -1,5 +1,6 @@
 package com.northenbank.pomodoro;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -13,86 +14,80 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.os.PowerManager;
+import android.os.Vibrator;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import java.util.Objects;
+
 public class TimerService extends Service {
     private static final String TAG = "TimerService:";
-
+    private static final String SCREENLOCK = "SCREENLOCK";
+    private static final CharSequence CHANNEL_NAME = "CHANNEL_NAME";
 
     private final IBinder mBinder = new LocalBinder();
 
     public class LocalBinder extends Binder {
         TimerService getService() {
-            // Return this instance of TimerService so clients can call public methods
             return TimerService.this;
         }
     }
+
     public TimerService() {
     }
 
     @Override
     public ComponentName startService(Intent service) {
-        //Log.i(TAG, "startService called.");
         return super.startService(service);
     }
 
     @Override
     public void startActivity(Intent intent) {
-        //Log.i(TAG, "startActivity called.");
         super.startActivity(intent);
     }
 
     @Override
     public void onRebind(Intent intent) {
-        //Log.i(TAG, "onRebind called.");
         super.onRebind(intent);
     }
 
     @Override
     public void onDestroy() {
-        //Log.i(TAG, "onDestroy called.");
         super.onDestroy();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //Log.i(TAG, "onStartCommand called.");
         putServiceForeground(getString(R.string.POMODORO_IS_RUNNING));
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onCreate() {
-        //Log.i(TAG, "onCreate called.");
         super.onCreate();
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        //Log.i(TAG, "onBind called.");
-        //throw new UnsupportedOperationException("Not yet implemented");
         return mBinder;
     }
 
     //communicate with activity
 
-    private void sendBroadcastMessage(String intentFilterName, long arg1, String extraKey) {
-        Intent intent = new Intent("TIMER_STATE_UPDATE");
-        if (arg1 != -1 && extraKey != null) {
-            intent.putExtra(extraKey, arg1);
-        }
+    private void sendBroadcastMessage(long arg1) {
+        Intent intent = new Intent(MSG_TYPE_TIMER_STATE_UPDATE);
+        intent.putExtra(REMAIN_MS, arg1);
         sendBroadcast(intent);
     }
 
     private final static String CHANNEL_ID = "13337";
     private final static int NOTIFICATION_ID = 13337;
 
-    private NotificationCompat.Builder createNotificationBuilder(String message){
+    private NotificationCompat.Builder createNotificationBuilder(String message) {
 
         Intent notificationIntent = new Intent(this, FullscreenActivity.class);
-
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, 0);
 
@@ -104,57 +99,47 @@ public class TimerService extends Service {
 
         return builder;
     }
-    private void putServiceForeground(String message){
+
+    private void putServiceForeground(String message) {
 
         Notification notification;
         NotificationCompat.Builder builder = createNotificationBuilder(message);
-        if ( Build.VERSION.SDK_INT < 26 ) {
-            Log.i("Putforward 1", "Buid.Version:"+Build.VERSION.SDK_INT);
-
+        if (Build.VERSION.SDK_INT < 26) {
             notification = builder.build();
-
         } else {
-            Log.i("Putforward 2", "Buid.Version:"+Build.VERSION.SDK_INT);
-
-            final String ChannelId = "northenbank.NotificationChannelID";
-            final CharSequence ChannelName = "Northenback Pomodoro Channel";
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, ChannelName, NotificationManager.IMPORTANCE_LOW);
-            ((NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE)).
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
+            ((NotificationManager) Objects.requireNonNull(this.getSystemService(Context.NOTIFICATION_SERVICE))).
                     createNotificationChannel(channel);
-
-            //builder = new Notification.Builder(this, ChannelId);
-
-
-            notification  = builder.build();
-
+            notification = builder.build();
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-            // notificationID allows you to update the notification later on.
+            assert mNotificationManager != null;
             mNotificationManager.notify(NOTIFICATION_ID, notification);
-            //startForeground(100, notification);
-            Log.i("notify", "notified");
-
         }
-
         startForeground(NOTIFICATION_ID, notification);
-   }
+    }
+
     //--------timer class-----------
-    public static final int TIMER_STATE_READY = 0;
-    public static final int TIMER_STATE_RUNNING = 1;
-    public static final int TIMER_STATE_PAUSE = 2;
-    public static final int TIMER_STATE_FINISHED = 3;
+    static final int TIMER_STATE_READY = 0;
+    static final int TIMER_STATE_RUNNING = 1;
+    static final int TIMER_STATE_PAUSE = 2;
+    static final int TIMER_STATE_FINISHED = 3;
+    static final String MSG_TYPE_TIMER_STATE_UPDATE = "TIMER_STATE_UPDATE";
+    static final String REMAIN_MS = "REMAIN_MS";
 
     private int timerState = TIMER_STATE_READY;
     private long remainMilliseconds = 0;
     private CountDownTimer countdownTimer;
-    public int getTimerState(){
+
+    public int getTimerState() {
         return timerState;
     }
-    public long getRemainMilliseconds(){
+
+    public long getRemainMilliseconds() {
         return remainMilliseconds;
     }
+
     public void startTimer(long currentSetTimer) {
-        Log.i(TAG, "startTimer called. timerState="+timerState );
         if (timerState == TIMER_STATE_READY) {
             Intent intent = new Intent(this, TimerService.class);
             intent.putExtra("key", "val");
@@ -165,7 +150,6 @@ public class TimerService extends Service {
             countdownTimer = new CountDownTimerClass(1000 * currentSetTimer, 1000);
             countdownTimer.start();
             timerState = TIMER_STATE_RUNNING;
-            Log.i("StartTimer: ", "Started");
 
         } else if (timerState == TIMER_STATE_RUNNING) {
             try {
@@ -177,92 +161,88 @@ public class TimerService extends Service {
             }
 
         } else {
-            //Log.i(TAG, "resuming a timer;");
             countdownTimer = new CountDownTimerClass(remainMilliseconds, 1000);
             countdownTimer.start();
             timerState = TIMER_STATE_RUNNING;
         }
 
     }
+
     public void stopTimer() {
         if (timerState == TIMER_STATE_RUNNING) {
             try {
                 countdownTimer.cancel();
-
-
             } catch (IllegalStateException e) {
                 e.printStackTrace();
             }
             stopForeground(true);
 
-        }else if (timerState == TIMER_STATE_PAUSE){
+        } else if (timerState == TIMER_STATE_PAUSE) {
             stopForeground(true);
         }
         stopSelf();
         remainMilliseconds = 0;
         timerState = TIMER_STATE_READY;
-        //updateTimerSetting();
-
     }
-    private void updateTick(long remainMS){
-        Log.i(TAG, "updateTick called. remain:"+remainMS+" | timerState="+timerState);
-        sendBroadcastMessage("TIMER", remainMS, "TIMER_STATE_UPDATE");
+
+    //-------send notification to lock screen --------
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @SuppressWarnings("deprecation")
+    private void wakeupScreen() {
+
+        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        assert powerManager != null;
+
+        if (!powerManager.isInteractive()) {
+            PowerManager.WakeLock wl = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, SCREENLOCK);
+            wl.acquire(10000);
+
+        }
     }
-    private void onTimerFinished(){
-        //Log.i(TAG, "onTimerFinished");
-        sendBroadcastMessage("TIMER", 0, "TIMER_STATE_UPDATE");
 
+    @SuppressLint("NewApi")
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void updateTick(long remainMS) {
+        Log.i(TAG, "updateTick called. remain:" + remainMS + " | timerState=" + timerState);
+        sendBroadcastMessage(remainMS);
+        if (remainMS <= 2000) {
+            wakeupScreen();
+        }
+    }
 
-//        // Add as notification
-//        Intent notificationIntent = new Intent(this, FullscreenActivity.class);
-//
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-//                notificationIntent, 0);
-//
-//        Notification notification = new NotificationCompat.Builder(this, "13337")
-//                .setSmallIcon(R.drawable.tomoto1)
-//                .setContentTitle("Pomodoro")
-//                .setContentText("pomodoro is mature!")
-//                .setContentIntent(pendingIntent).build();
-//
-//        startForeground(13337, notification);
-
-        //NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        //manager.notify(0, builder.build());
-
+    private void onTimerFinished() {
+        sendBroadcastMessage(0);
         putServiceForeground(getString(R.string.POMODORO_IS_MATURE));
-
     }
 
     public class CountDownTimerClass extends CountDownTimer {
 
-        public CountDownTimerClass(long millisInFuture, long countDownInterval) {
-
+        CountDownTimerClass(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
-
         }
 
-
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @SuppressLint("NewApi")
         @Override
         public void onTick(long millisUntilFinished) {
-
             remainMilliseconds = millisUntilFinished;
-
             updateTick(remainMilliseconds);
-
         }
 
         @Override
         public void onFinish() {
             onTimerFinished();
-            //mContentView.setText(R.string.count_down_finished);
+
             timerState = TIMER_STATE_FINISHED;
             remainMilliseconds = 0;
+
+            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            long[] pattern = new long[]{50, 500, 100, 500, 50, 500, 100, 500};
+            vibrator.vibrate(pattern, -1);
 
             MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.done);
             mp.start();
             stopSelf();
-
         }
     }
 }

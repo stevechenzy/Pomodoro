@@ -23,6 +23,7 @@ ____
 3. Switch to predefined timers(45,30, 25, 15, 10, 7, 5, 3, 1min), on the ready state (no timer is running or paused), **Fling cross the main width of screen**. 
 4. Adjust the timer setting: **Pinch (Zoom)** with 2 fingers, or **scroll** (one finger flip vertically).
 
+To make it works properly, you should allow **wake up** permission and allow "**lock screen notification**" 
 ____
 
 市场上的番茄钟应用都太炫、充斥了广告和推广信息，甚至申请各种不必要的权限，完全是与专心致志的目标背道而驰。求人不如求己，自己开发一个吧！"前软件工程师"开发的第一个安卓手机应用，极简单、极干净、不要额外的权限，不要广告。满足自己看书、工作甚至培训上课的需要。
@@ -34,7 +35,7 @@ ____
 3. 切换预设时间（45,30, 25, 15, 10, 7, 5, 3, 1分钟）：在定时器不处于运行或暂停的状态时，**水平滑过屏幕**
 4. 自由调整时间：**缩放（2指），滚动（1指，垂直方向）**
 
-
+如果倒计时时间很长，手机会锁屏或休眠，需要允许"**唤醒**"的权限，和打开这个app的"**锁屏通知**"开关。
 ____
 ## use it in the training room / 在培训教室里使用：
 
